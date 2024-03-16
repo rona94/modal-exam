@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Modal</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Rubik:wght@300..900&display=swap" rel="stylesheet">
+
+        <style>
+            :root {
+                --color-primary: #73d61c;
+                --color-primary-hover: #65b320;
+                --color-secondary: #e64635;
+                --color-secondary-hover: #b83d30;
+                --color-black: #000;
+                --color-black-hover: #333;
+            }
+            * {
+                font-family: "Roboto", sans-serif;
+            }
+            .modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.3);
+                display: none;
+            }
+            .modal.active {
+                display: block;
+            }
+            .modal__content {
+                background: #fff;
+                width: 500px;
+                min-height: 100px;
+                max-width: 100%;
+                border-radius: 15px;
+                margin: 100px auto;
+                -webkit-transition: background 0.3s;
+                transition: background 0.3s;
+                padding: 15px;
+            }
+            .btn {
+                display: inline-block;
+                background: var(--color-primary);
+                color: #fff;
+                border: 0;
+                font-size: 14px;
+                border-radius: 4px;
+                cursor: pointer;
+                padding: 5px 15px;
+                text-decoration: none;
+                -webkit-transition: background 0.3s;
+                transition: background 0.3s;
+            }
+            .btn-primary:hover {
+                background-color: var(--color-primary-hover);
+            }
+            .btn-secondary {
+                background-color: var(--color-secondary)
+            }
+            .btn-secondary:hover {
+                background-color: var(--color-secondary-hover)
+            }
+            .btn-black {
+                background-color: var(--color-black)
+            }
+            #modal-cancel.cancelled,
+            .btn-black:hover {
+                background-color: var(--color-black-hover)
+            }
+            #modal-cancel.cancelled {
+                cursor: not-allowed;
+            }
+            .text-center {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>My Modal</h1>
+        <button id="modal-cancel" class="btn btn-black modal-open" data-target="#modal">Cancel</button>
+
+        <div id="modal" class="modal">
+            <div class="modal__content">
+                <p class="text-center">Are you sure you want to cancel your subscription?</p>
+                
+                <div class="text-center">
+                    <button class="btn btn-secondary modal-close">No</button>
+                    <button class="btn btn-primary modal-success" data-target="#modal-success">Yes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-success" class="modal">
+            <div class="modal__content">
+                <p class="text-center">Subscription successfully cancelled!</p>
+            </div>
+        </div>
+        <script>
+            let closeModal = document.querySelectorAll(".modal-close");
+            let openModal = document.querySelectorAll(".modal-open");
+            let successModal = document.querySelector(".modal-success");
+
+            closeModal.forEach(element => {
+                element.addEventListener("click", closeModalHandle, false)
+            })
+
+            openModal.forEach(element => {
+                element.addEventListener("click", openModalHandle, false)
+            })
+
+            successModal.addEventListener("click", successModalHandle, false)
+
+            function closeModalHandle(e) {
+                e.target.closest(".modal").classList.remove("active")
+            }
+
+            function openModalHandle(e) {
+                const target = e.target.getAttribute("data-target");
+                document.querySelector(target).classList.add("active");
+            }
+
+            function successModalHandle(e) {
+                closeModalHandle(e)
+                openModalHandle(e)
+
+                setTimeout(() => {
+                    const target = e.target.getAttribute("data-target");
+                    document.querySelector(target).classList.remove("active");
+                
+                    const cancelBtn = document.querySelector("#modal-cancel");
+                    cancelBtn.innerHTML = "cancelled"
+                    cancelBtn.classList.add("cancelled");
+                    cancelBtn.removeEventListener("click", openModalHandle, false)
+                }, 2000)
+            }
+
+        </script>
+    </body>
+</html>
